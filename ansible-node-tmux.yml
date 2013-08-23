@@ -7,7 +7,7 @@
     gitbranch: master
     pidfile: /home/merge/ansible-node-tmux/pid.txt
     tmuxsession: test:1
-    npmpath: /home/merge/ansible-node-tmux/node_app
+    appPath: /home/merge/ansible-node-tmux/node_app
     nodeapp: app.js
     nodeenv: development
   tasks:
@@ -17,7 +17,7 @@
          version={{gitbranch}}
 
   - name: NPM update via package.json
-    npm: path={{npmpath}}
+    npm: path={{appPath}}
 
   - name: Get pid from pid.txt if it exists
     command: cat {{pidfile}} removes={{pidfile}}
@@ -31,6 +31,7 @@
     pause: seconds=5
 
   - name: Start Node Process if not running
+    command: tmux send-keys -t {{tmuxsession}} "cd {{appPath}}" "ENTER"
     command: tmux send-keys -t {{tmuxsession}} "NODE_ENV={{nodeenv}} node {{nodeapp}}" "ENTER"
     async: 10
     poll: 0
