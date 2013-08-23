@@ -11,7 +11,7 @@ function doStuff(times){
   setTimeout(function(){
       if(times){
         console.log('Iteration '+ times);
-        herpy(times -1);
+        doStuff(times -1);
       }
       else {
         fs.unlink('./pid.txt',function(err){
@@ -23,7 +23,7 @@ function doStuff(times){
   }, 1000);
 }
 
-herpy(100);
+doStuff(100);
 
 //Im using SIGINT here so you can kill the script via ctrl-c
 process.on('SIGINT', function() {
