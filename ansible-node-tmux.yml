@@ -1,0 +1,35 @@
+---
+- hosts: nginx.internal
+  user: merge
+  vars:
+    gitrepo: git@bitbucket.org:MonsterTKE/vapemerge.git
+    gitdest: /home/merge/testAnsible
+    gitbranch: newChat
+    pidfile: /home/merge/testAnsible/pid.txt
+    tmuxsession: test:1
+    nodeapp: derp.js
+    nodeenv: development
+  tasks:
+  - name: Git Checkout current Branch
+    git: repo={{gitrepo}}
+         dest={{gitdest}}
+         version={{gitbranch}}
+
+  - name: NPM update via package.json
+    npm: path=/home/merge/testAnsible/app
+
+  - name: Get pid from pid.txt if it exists
+    command: cat {{pidfile}} removes={{pidfile}}
+    register: pid_contents
+
+  - name: Stop Node Process if running
+    command: kill -2 ${pid_contents.stdout} removes={{pidfile}}
+    when: pid_contents.stdout > 1
+
+  - name: Pause to ensure correct state
+    pause: seconds=5
+
+  - name: Start Node Process if not running
+    command: tmux send-keys -t {{tmuxsession}} "NODE_ENV={{nodeenv}} node {{nodeapp}}" "ENTER"
+    async: 10
+    poll: 0
