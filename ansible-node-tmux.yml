@@ -5,7 +5,7 @@
     gitrepo: git@github.com:PaperElectron/ansible-node-tmux.git
     gitdest: /home/merge/ansible-node-tmux
     gitbranch: master
-    pidfile: /home/merge/ansible-node-tmux/pid.txt
+    pidfile: /home/merge/ansible-node-tmux/node_app/pid.txt
     tmuxsession: test:1
     appPath: /home/merge/ansible-node-tmux/node_app
     nodeapp: app.js
@@ -31,7 +31,6 @@
     pause: seconds=5
 
   - name: Start Node Process if not running
-    command: tmux send-keys -t {{tmuxsession}} "cd {{appPath}}" "ENTER"
-    command: tmux send-keys -t {{tmuxsession}} "NODE_ENV={{nodeenv}} node {{nodeapp}}" "ENTER"
+    command: tmux send-keys -t {{tmuxsession}} "NODE_ENV={{nodeenv}} node {{appPath}}/{{nodeapp}}" "ENTER"
     async: 10
     poll: 0
