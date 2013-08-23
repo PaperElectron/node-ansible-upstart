@@ -2,12 +2,13 @@
 - hosts: nginx.internal
   user: merge
   vars:
-    gitrepo: git@bitbucket.org:MonsterTKE/vapemerge.git
-    gitdest: /home/merge/testAnsible
-    gitbranch: newChat
-    pidfile: /home/merge/testAnsible/pid.txt
+    gitrepo: git@github.com:PaperElectron/ansible-node-tmux.git
+    gitdest: /home/merge/ansible-node-tmux
+    gitbranch: master
+    pidfile: /home/merge/ansible-node-tmux/pid.txt
     tmuxsession: test:1
-    nodeapp: derp.js
+    npmpath: /home/merge/ansible-node-tmux/node_app
+    nodeapp: app.js
     nodeenv: development
   tasks:
   - name: Git Checkout current Branch
@@ -16,7 +17,7 @@
          version={{gitbranch}}
 
   - name: NPM update via package.json
-    npm: path=/home/merge/testAnsible/app
+    npm: path={{npmpath}}
 
   - name: Get pid from pid.txt if it exists
     command: cat {{pidfile}} removes={{pidfile}}
