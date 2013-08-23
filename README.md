@@ -20,13 +20,9 @@ applications without having to write and maintain several different upstart jobs
 ###Demo Instructions
 
 - Clone this repo on your local and remote machines.
-
 - Edit hosts, user, and vars in ansible-node-tmux.yml
-
 - Start a tmux session on the remote with `tmux new -s sessionName`
-
-- Set variable `tmuxsession: sessionName:1` if you have tmux setup to start counting windows from one -- otherwise `tmuxsession: sessionName:0`
-	
+- Set variable `tmuxsession: sessionName:1` if you have tmux setup to start counting windows from one -- otherwise `tmuxsession: sessionName:0`	
 - Run `ansible-playbook -verbose ansible-node-tmux.yml` from local.
 
 ---
@@ -34,11 +30,10 @@ applications without having to write and maintain several different upstart jobs
 ###Production and development instructions
 
 - Clone this repo on the local 
-
 - Clone your remote repo into whatever location it needs to run from.
-
 - Edit hosts, user, and vars in ansible-node-tmux.yml
-
+- Start a tmux session on the remote with `tmux new -s sessionName`
+- Set variable `tmuxsession: sessionName:1` if you have tmux setup to start counting windows from one -- otherwise `tmuxsession: sessionName:0`
 - ansible-playbook -verbose ansible-node-tmux.yml` from local.
 
 #Important node.js considerations
