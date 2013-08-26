@@ -2,12 +2,12 @@
 - hosts: nginx.internal
   user: merge
   vars:
-    gitrepo: git@github.com:PaperElectron/ansible-node-tmux.git
-    gitdest: /home/merge/ansible-node-tmux
+    gitrepo: git@bitbucket.org:MonsterTKE/vapemerge.git
+    gitdest: /home/merge/node/merge_app
     gitbranch: master
-    pidfile: /home/merge/ansible-node-tmux/node_app/pid.txt
-    tmuxsession: test:1
-    appPath: /home/merge/ansible-node-tmux/node_app
+    pidfile: /home/merge/node/merge_app/pid.txt
+    tmuxsession: mergeAPP:1
+    appPath: /home/merge/node/merge_app/app
     nodeapp: app.js
     nodeenv: development
   tasks:
@@ -27,6 +27,9 @@
     command: kill -2 ${pid_contents.stdout} removes={{pidfile}}
     when: pid_contents.stdout > 1
 
+  - name: Change Directories
+    command: tmux send-keys -t {{tmuxsession}} "cd {{appPath}}" "ENTER"
+    
   - name: Pause to ensure correct state
     pause: seconds=5
 
