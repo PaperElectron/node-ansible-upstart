@@ -1,15 +1,25 @@
 ---
+#Hostname of your application server, (or group if you are deploying to multiple)
 - hosts: nginx.internal
+  #User that owns the directories below.
   user: merge
   vars:
-    gitrepo: git@bitbucket.org:MonsterTKE/vapemerge.git
-    gitdest: /home/merge/node/merge_app
+    #repo containing your project
+    gitrepo: git@github.com:PaperElectron/ansible-node-tmux.git
+    #Destination directory 
+    gitdest: /home/prod_usr/node/prod_app
+    #Desired git branch
     gitbranch: master
-    pidfile: /home/merge/node/merge_app/pid.txt
-    tmuxsession: mergeAPP:1
-    appPath: /home/merge/node/merge_app/app
+    #Location the application writes it pid file too
+    pidfile: /home/merge/node/prod_app/pid.txt
+    #Tmux session name and window number that ansible should send its commands to.
+    tmuxsession: prodAPP:1
+    #Path to Node.js executable.
+    appPath: /home/prod_usr/node/prod_app/app
+    #Node.js executable name.
     nodeapp: app.js
-    nodeenv: development
+    #Desired NODE_ENV variable
+    nodeenv: production
   tasks:
   - name: Git Checkout current Branch
     git: repo={{gitrepo}}
