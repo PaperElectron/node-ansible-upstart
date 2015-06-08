@@ -1,8 +1,7 @@
-ansible-node-tmux
+node-ansible-upstart
 =================
 
-####Playbook to update and deploy node.js in remote tmux session.
-Currently it will
+####Playbook to update and deploy a NodeJs application available publicly from https://www.npmjs.com/
 
 - Checkout the latest branch from whatever repo specified.
 - Install the latest dependancies from package.json
