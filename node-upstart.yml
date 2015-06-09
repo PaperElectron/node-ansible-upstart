@@ -1,0 +1,41 @@
+---
+#Hostname of your application server, (or group if you are deploying to multiple)
+- hosts: '{{host}}'
+  remote_user: '{{user}}'
+  sudo: yes
+  vars_files:
+    - variables.yml
+
+  tasks:
+  
+  - name: Install
+    npm: name={{npm_app}} global=yes state=latest
+  
+  - name: Ensure www directory is present.
+    file: owner=root
+          group=www-data
+          mode=0755
+          dest=/var/www
+          state=directory
+
+  - name: Ensure service user exists
+    user: name={{service_user}} 
+          group={{service_group}} 
+          createhome=yes
+          home=/var/www/{{service_user}}/ 
+          system=yes state=present 
+          shell=/bin/false
+
+  - name: copy files to home directory.
+    copy: src=files/
+          dest=/var/www/{{service_user}}/
+          group={{service_group}}
+          owner={{service_user}}
+  - include: lib/authbind.yml
+    when: "{{authbind}}"
+
+  - name: Copy Upstart .conf file
+    template: src=lib/skeleton.j2 dest=/etc/init/{{service}}.conf mode=0644
+
+  - name: start service
+    service: name={{service}} enabled=yes state=started

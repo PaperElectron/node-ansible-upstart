@@ -1,0 +1,13 @@
+---
+npm_app: 'sundry'
+service: 'sundry'
+description: 'Starts an instance of the Sundry reverse proxy.'
+authbind: false
+service_user: sundry
+service_group: www-data
+env_vars:
+    - env: HOME
+      value: /var/www/sundry
+    - env: NODE_ENV
+      value: production  
+start_stanza: start-stop-daemon --start -u sundry --exec /usr/bin/authbind sundry start

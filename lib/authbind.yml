@@ -1,0 +1,13 @@
+- name: Ensure Authbind is installed
+  sudo: yes
+  apt: pkg={{item}} update_cache=yes
+  with_items:
+   - authbind
+
+- name: Add Port 80 
+  sudo: yes
+  file: path=/etc/authbind/byport/80 mode=0755 owner=www-data state=touch
+
+- name: Add Port 443
+  sudo: yes 
+  file: path=/etc/authbind/byport/443 mode=0755 owner=www-data state=touch

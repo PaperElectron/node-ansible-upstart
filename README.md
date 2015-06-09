@@ -1,58 +1,62 @@
 node-ansible-upstart
 =================
 
-####Playbook to update and deploy a NodeJs application available publicly from https://www.npmjs.com/
-
-- Checkout the latest branch from whatever repo specified.
-- Install the latest dependancies from package.json
-- Check if the server is running, if so stop it.
-- Restart the server in the running tmux session.
-
-Single developers and small teams often dont have time to maintain several different configurations
-for dev servers, production servers and local installs. This playbook is an easy way to update and deploy node.js
-applications without having to write and maintain several different upstart jobs on different servers.
-
-
+####Install and run a node application with upstart.
 
 ---
 
-###Demo Instructions
+#### Requirements
 
-- Clone this repo on your local and remote machines.
-- Edit hosts, user, and vars in ansible-node-tmux.yml
-- Start a tmux session on the remote with `tmux new -s sessionName`
-- Set variable `tmuxsession: sessionName:1` if you have tmux setup to start counting windows from one -- otherwise `tmuxsession: sessionName:0`	
-- Run `ansible-playbook -verbose ansible-node-tmux.yml` from local.
+- Ansible v1.9.1+
+- npm and node on remote host.
 
 ---
 
-###Production and development instructions
+## Configuration and setup
 
-- Clone this repo on the local 
-- Clone your remote repo into whatever location it needs to run from.
-- Edit hosts, user, and vars in ansible-node-tmux.yml
-- Start a tmux session on the remote with `tmux new -s sessionName`
-- Set variable `tmuxsession: sessionName:1` if you have tmux setup to start counting windows from one -- otherwise `tmuxsession: sessionName:0`
-- ansible-playbook -verbose ansible-node-tmux.yml` from local.
-
-#Important node.js considerations
- This playbook requires a tiny bit of boilerplate.
-
-```javascript
-var fs = require("fs")
-
-//Write the current pid so ansible can send it a SIGINT later
-fs.writeFile('./pid.txt', process.pid, function(){
-    console.log('pid ' + process.pid);
-})
-
-//Catch SIGINT, remove pid.txt, as well as whatever other cleanup you want.
-process.on('SIGINT', function() {
-    fs.unlink('./pid.txt', function(err){
-        if(err) throw err;
-        console.log('Recieved SIGINT, shutting down');
-        process.exit();
-    })
-});
-
+#### Download
+```shell
+	git clone https://github.com/PaperElectron/node-ansible-upstart.git
 ```
+
+### Edit variables.yml
+
+This file is pretty self explanitory, it contains the user names, groups and variables needed to create the upstart job. 
+
+```yml
+---
+npm_app: 'coolApp' ### application to run
+service: 'my-service' ### service name
+description: 'Cool app' ### description 
+authbind: false ### setup authbind for port 80 and 443?
+service_user: coolapp ### will create /var/www/coolapp
+service_group: www-data ### group, also used for authbind
+env_vars: ### Env variables to add to export on service start
+    - env: HOME
+      value: /var/www/coolapp
+    - env: NODE_ENV
+      value: production  
+### Command to execute      
+start_stanza: start-stop-daemon --start -u coolapp --exec /usr/bin/authbind coolapp start
+```
+
+### Add files to ./files directory
+
+Any files needed by your application can be uploaded to the services home directory by placing them in `./files`. This is useful for config files, or anything else that your application needs to run.
+
+## Run
+
+This playbook is single host safe, you must include a user and host with the --extra-vars option. 
+
+```shell
+# ansible-playbook node-upstart.yml --ask-sudo-pass --extra-vars "host=some.hosname user=bob"
+```
+
+## Roadmap
+
+- Install specified Nodejs version.
+- Add additional granularity to upstart .conf creation
+
+## Example Application
+
+This playbook contains files and configuration to setup and run PaperElectron/Sundry with authbind. 

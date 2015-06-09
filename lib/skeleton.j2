@@ -1,0 +1,16 @@
+#description {{description}}
+
+start on (local-filesystems and net-device-up IFACE=eth0)
+stop on shutdown
+
+# Automatically Respawn:
+respawn
+respawn limit 5 60
+
+script
+{% for v in env_vars %}
+  export {{v.env}}={{v.value}}
+{% endfor %}
+  exec {{start_stanza}}
+end script
+
