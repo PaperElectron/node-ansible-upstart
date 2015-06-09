@@ -59,4 +59,4 @@ This playbook is single host safe, you must include a user and host with the --e
 
 ## Example Application
 
-This playbook contains files and configuration to setup and run PaperElectron/Sundry with authbind. 
+This playbook contains files and configuration to setup and run [PaperElectron/Sundry](PaperElectron/Sundry) with authbind. 
